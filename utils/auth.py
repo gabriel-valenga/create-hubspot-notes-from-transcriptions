@@ -1,4 +1,3 @@
-# utils/auth.py
 from fastapi import Request, HTTPException, status
 from utils.aws.ssm.parameter_store import parameter_store
 import os
