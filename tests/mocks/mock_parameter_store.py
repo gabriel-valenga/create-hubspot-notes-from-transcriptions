@@ -1,4 +1,4 @@
-class ParameterStore:
+class MockParameterStore:
     def __init__(self):
         self.client = None # Mock client
 
@@ -9,4 +9,4 @@ class ParameterStore:
         return 'test-token'
 
 # global instance
-parameter_store = ParameterStore()
+parameter_store = MockParameterStore()

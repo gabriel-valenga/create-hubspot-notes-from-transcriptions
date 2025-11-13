@@ -2,21 +2,18 @@ import pytest
 from unittest.mock import MagicMock, patch
 from fastapi import HTTPException
 from utils.auth import verify_token
+from tests.mocks.mock_parameter_store import parameter_store as mock_parameter_store
 
 
-# ✅ Case 1: valid token
-@patch("utils.auth.parameter_store.get")
-@patch("utils.auth.os.getenv")
-def test_verify_token_valid(mock_getenv, mock_parameter_store_get):
-    mock_getenv.return_value = "PARAM_NAME"
-    mock_parameter_store_get.return_value = "valid_token"
-
+# ✅ Case 1: valid token (using our mock)
+@patch("utils.auth.parameter_store", mock_parameter_store)
+@patch("utils.auth.os.getenv", return_value="PARAM_NAME")
+def test_verify_token_valid(mock_getenv):
     request = MagicMock()
     request.headers = {"Authorization": "Bearer valid_token"}
 
-    # Should not raise any exception
     result = verify_token(request)
-    assert result is None  # verify_token doesn't return anything, only raises on error
+    assert result is None  # Should not raise exception
 
 
 # ❌ Case 2: missing Authorization header
