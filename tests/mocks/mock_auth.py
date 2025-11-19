@@ -1,4 +1,4 @@
-from mocks.mock_parameter_store import MockParameterStore
+from tests.mocks.mock_parameter_store import MockParameterStore
 from fastapi import HTTPException, status
 import os
 

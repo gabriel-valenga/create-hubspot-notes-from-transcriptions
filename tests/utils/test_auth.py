@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
 from fastapi import HTTPException
-from mocks.mock_auth import verify_token
-from mocks.mock_parameter_store import MockParameterStore
+from tests.mocks.mock_auth import verify_token
+from tests.mocks.mock_parameter_store import MockParameterStore
 
 
 mock_parameter_store = MockParameterStore()

@@ -1,5 +1,4 @@
-import pytest
-from mocks.mock_ai_text import MockTextSummarizer
+from tests.mocks.mock_ai_text import MockTextSummarizer
 
 
 # ✅ Case 1: successful summary generation
