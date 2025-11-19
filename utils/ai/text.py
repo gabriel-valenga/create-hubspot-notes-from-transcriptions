@@ -1,5 +1,4 @@
 import google.generativeai as genai
-import requests
 from utils.aws.ssm.parameter_store import parameter_store
 
 class TextSummarizer():
