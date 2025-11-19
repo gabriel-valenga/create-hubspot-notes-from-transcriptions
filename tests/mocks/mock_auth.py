@@ -1,7 +1,8 @@
-from tests.mocks.mock_parameter_store import parameter_store
+from mocks.mock_parameter_store import MockParameterStore
 from fastapi import HTTPException, status
 import os
 
+mock_parameter_store = MockParameterStore()
 
 def verify_token(request):
     """Mock function to verify the Bearer token from the request against the valid token stored in mock parameter store."""
@@ -22,7 +23,7 @@ def verify_token(request):
             detail="Server misconfiguration: AUTH_TOKEN_PARAM_NAME not set"
         )
 
-    valid_token = parameter_store.get_parameter(param_name)
+    valid_token = mock_parameter_store.get_parameter(param_name)
 
     if provided_token != valid_token:
         raise HTTPException(
