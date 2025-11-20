@@ -4,7 +4,7 @@ import os
 
 mock_parameter_store = MockParameterStore()
 
-def verify_token(request):
+def mock_verify_token(request, simulate_missing_env=False, simulate_invalid_token=False):
     """Mock function to verify the Bearer token from the request against the valid token stored in mock parameter store."""
     auth_header = request.headers.get("Authorization")
 
@@ -14,8 +14,12 @@ def verify_token(request):
             detail="Missing or invalid Authorization header"
         )
 
-    provided_token = auth_header.split("Bearer ")[1]
-    param_name = os.getenv("AUTH_TOKEN_PARAM_NAME")
+    if simulate_missing_env:
+        param_name = None
+    else:
+        param_name = "test-token"
+
+    provided_token = "test-token" if not simulate_invalid_token else "wrong-token"
 
     if not param_name:
         raise HTTPException(
