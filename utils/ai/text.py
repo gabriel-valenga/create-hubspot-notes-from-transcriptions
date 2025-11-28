@@ -13,7 +13,5 @@ class TextSummarizer():
     def summarize_text(self, text: str) -> str:
         response = self.chat.send_message(f"Summarize this text: {text}")
         print(response.text)
-        try:
-            return response.text
-        except Exception:
-            return "Error generating summary."
+        return response.text
+

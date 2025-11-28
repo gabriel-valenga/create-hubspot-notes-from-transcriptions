@@ -14,7 +14,4 @@ class MockTextSummarizer():
         """Mock function to summarize text using a mock AI service."""
         response = SimpleNamespace(text="Text summary from mock")
         print(response.text)
-        try:
-            return response.text
-        except Exception:
-            return "Error generating summary."
+        return response.text
