@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 from passlib.context import CryptContext
 from utils.jwt_manager import JWTManager
 
@@ -14,7 +14,8 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 
-def verify_token(request):
+async def verify_token(request:Request):
+    print(request.headers)
     auth = request.headers.get("Authorization")
     if not auth or not auth.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Missing Authorization header")

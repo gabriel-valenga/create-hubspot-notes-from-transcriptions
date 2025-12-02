@@ -30,13 +30,11 @@ app.include_router(auth_router)
 
 @app.get("/", dependencies=[Depends(verify_token)])
 def test_endpoint(request: Request):
-    verify_token(request)
     return {"message": "Hello World"}
 
 
 @app.post("/test-summarizer", dependencies=[Depends(verify_token)])
 async def test_summarizer(request:Request, body: TextSummarizerRequest):
-    verify_token(request)
     text = body.text
     summary = TextSummarizer().summarize_text(text)
     return {"summary": summary}

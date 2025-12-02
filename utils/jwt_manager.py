@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta
-from aws.ssm.parameter_store import parameter_store
+from .aws.ssm.parameter_store import parameter_store
 
 
 class JWTManager:
