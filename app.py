@@ -1,12 +1,15 @@
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from fastapi.security import OAuth2PasswordBearer
 from mangum import Mangum
 from models.requests.text_summarizer import TextSummarizerRequest
 from routes.auth import router as auth_router
 from utils.ai.text import TextSummarizer
 from utils.auth import verify_token
 
+
 app = FastAPI(title='Create hubspot notes from text')
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/login") # OAuth2 scheme setup, points to the token URL for Swagger UI "Authorize" button
 
 
 @app.exception_handler(Exception)

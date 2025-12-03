@@ -16,6 +16,7 @@ def signup(payload: SignupRequest):
     if existing:
         raise HTTPException(status_code=400, detail='User already exists')
     user_id = str(uuid.uuid4())
+    print("Payload:", payload)
     hashed = hash_password(payload.password)
     Storage.create_user(user_id=user_id, email=payload.email, hashed_password=hashed)
     return {'user_id': user_id, 'email': payload.email}
