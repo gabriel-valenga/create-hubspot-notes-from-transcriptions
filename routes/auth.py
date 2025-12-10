@@ -1,5 +1,6 @@
 import uuid, datetime
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.security import OAuth2PasswordRequestForm
 from models.requests.user_requests import SignupRequest, LoginRequest, TokenResponse
 from utils.auth import hash_password, verify_password
 from utils.storage import Storage
@@ -54,3 +55,15 @@ def refresh(refresh_token: str):
 def logout(refresh_token: str):
     Storage.delete_refresh_token(refresh_token)
     return {'ok': True}
+
+
+@router.post('/login-swagger', response_model=TokenResponse)
+def login_swagger(form: OAuth2PasswordRequestForm = Depends()):
+    user = Storage.get_user_by_email(form.username)
+    if not user or not verify_password(form.password, user['hashed_password']):
+        raise HTTPException(status_code=401, detail='Invalid credentials')
+    access = jwt_manager.create_access_token(subject=user['user_id'])
+    refresh_id = str(uuid.uuid4())
+    expires = (datetime.datetime.now() + datetime.timedelta(days=7)).isoformat()
+    Storage.store_refresh_token(token_id=refresh_id, user_id=user['user_id'], expires_at_iso=expires)
+    return {'access_token': access, 'token_type': 'bearer', 'refresh_token': refresh_id}
