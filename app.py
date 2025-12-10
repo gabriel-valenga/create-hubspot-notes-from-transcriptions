@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Security
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer
 from mangum import Mangum
@@ -31,12 +31,12 @@ async def http_exception_handler(request, exc: HTTPException):
 app.include_router(auth_router)
 
 
-@app.get("/", dependencies=[Depends(verify_token)])
+@app.get("/", dependencies=[Security(verify_token)])
 def test_endpoint(request: Request):
     return {"message": "Hello World"}
 
 
-@app.post("/test-summarizer", dependencies=[Depends(verify_token)])
+@app.post("/test-summarizer", dependencies=[Security(verify_token)])
 async def test_summarizer(request:Request, body: TextSummarizerRequest):
     text = body.text
     summary = TextSummarizer().summarize_text(text)

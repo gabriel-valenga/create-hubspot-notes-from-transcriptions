@@ -6,6 +6,7 @@ from utils.jwt_manager import JWTManager
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 jwtm = JWTManager()
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -15,7 +16,7 @@ def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
 
-async def verify_token(token: str = Depends(OAuth2PasswordBearer)):
+async def verify_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwtm.decode_token(token)
     except ValueError as e:
