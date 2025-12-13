@@ -1,4 +1,5 @@
-import uuid, datetime
+import uuid
+from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from models.requests.user_requests import SignupRequest, LoginRequest, TokenResponse
@@ -17,7 +18,6 @@ def signup(payload: SignupRequest):
     if existing:
         raise HTTPException(status_code=400, detail='User already exists')
     user_id = str(uuid.uuid4())
-    print("Payload:", payload)
     hashed = hash_password(payload.password)
     Storage.create_user(user_id=user_id, email=payload.email, hashed_password=hashed)
     return {'user_id': user_id, 'email': payload.email}
@@ -33,7 +33,7 @@ def login(payload: LoginRequest, request: Request):
         raise HTTPException(status_code=401, detail='Invalid credentials')
     access = jwt_manager.create_access_token(subject=user['user_id'])
     refresh_id = str(uuid.uuid4())
-    expires = (datetime.datetime.now() + datetime.timedelta(days=7)).isoformat()
+    expires = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
     Storage.store_refresh_token(token_id=refresh_id, user_id=user['user_id'], expires_at_iso=expires)
     return {'access_token': access, 'token_type': 'bearer', 'refresh_token': refresh_id}
 
@@ -43,8 +43,8 @@ def refresh(refresh_token: str):
     token_item = Storage.get_refresh_token(refresh_token)
     if not token_item:
         raise HTTPException(status_code=401, detail='Invalid refresh token')
-    exp = datetime.datetime.fromisoformat(token_item['expires_at'])
-    if exp < datetime.datetime.now():
+    exp = datetime.fromisoformat(token_item['expires_at'])
+    if exp < datetime.now(timezone.utc):
         Storage.delete_refresh_token(refresh_token)
         raise HTTPException(status_code=401, detail='Refresh token expired')
     access = jwt_manager.create_access_token(subject=token_item['user_id'])
@@ -64,6 +64,6 @@ def login_swagger(form: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=401, detail='Invalid credentials')
     access = jwt_manager.create_access_token(subject=user['user_id'])
     refresh_id = str(uuid.uuid4())
-    expires = (datetime.datetime.now() + datetime.timedelta(days=7)).isoformat()
+    expires = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
     Storage.store_refresh_token(token_id=refresh_id, user_id=user['user_id'], expires_at_iso=expires)
     return {'access_token': access, 'token_type': 'bearer', 'refresh_token': refresh_id}

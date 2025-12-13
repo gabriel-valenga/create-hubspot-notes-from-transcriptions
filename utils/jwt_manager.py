@@ -1,5 +1,5 @@
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from .aws.ssm.parameter_store import parameter_store
 
 
@@ -12,7 +12,7 @@ class JWTManager:
 
     def create_access_token(self, subject:str, expires_minutes:int=15) -> str:
         """Create a JWT access token."""
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         expires = now + timedelta(minutes=expires_minutes)
         payload = {
             "sub": subject,
