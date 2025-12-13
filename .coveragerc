@@ -1,0 +1,15 @@
+[run]
+source = 
+    app.py
+    routes
+    utils 
+
+omit =
+    tests/*
+    .venv/*
+    **/__init__.py
+    config.py
+
+[report]
+exclude_lines =
+    if __name__ == .__main__.:
