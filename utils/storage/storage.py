@@ -1,21 +1,22 @@
-from typing import Optional
-from config import ENV
-
-DYNAMO_TABLE_USERS = 'users'
-DYNAMO_TABLE_TOKENS = 'tokens'
-
-if ENV != 'local':
-    import boto3
-    dynamodb = boto3.resource('dynamodb')
-    users_table = dynamodb.Table(DYNAMO_TABLE_USERS)
-    tokens_table = dynamodb.Table(DYNAMO_TABLE_TOKENS)
-else:
-    import shelve
-    _USERS_DB = 'local_users.db'
-    _TOKENS_DB = 'local_tokens.db'
 
 
-class Storage:
+
+
+
+class DynamoStorage:
+
+    def __init__(self):
+        self.ENV = ENV
+        self.DYNAMO_TABLE_USERS = 'users'
+        self.DYNAMO_TABLE_TOKENS = 'tokens'
+
+        if selfENV != 'local':
+            import boto3
+            dynamodb = boto3.resource('dynamodb')
+            users_table = dynamodb.Table(self.DYNAMO_TABLE_USERS)
+            tokens_table = dynamodb.Table(self.DYNAMO_TABLE_TOKENS)
+        # else:
+            
 
     @staticmethod
     def create_user(user_id: str, email: str, hashed_password:str) -> None:
@@ -28,11 +29,8 @@ class Storage:
                     'hashed_password': hashed_password
                 }
             )
-        else:
-            with shelve.open(_USERS_DB) as db:
-                if user_id in db:
-                    raise ValueError('User already exists')
-                db[user_id] = {'user_id': user_id, 'email': email, 'hashed_password': hashed_password}
+        # else:
+            
 
 
     @staticmethod
@@ -46,11 +44,7 @@ class Storage:
             items = response.get('Items', [])
             return items[0] if items else None
         else:
-            with shelve.open(_USERS_DB) as db:
-                for user in db.values():
-                    if user['email'] == email:
-                        return user
-            return None
+            
         
 
     @staticmethod

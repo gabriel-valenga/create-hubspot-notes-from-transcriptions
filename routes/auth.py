@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from models.requests.user_requests import SignupRequest, LoginRequest, TokenResponse
 from utils.auth import hash_password, verify_password
-from utils.storage import Storage
+from utils.storage.storage import Storage
 from utils.jwt_manager import JWTManager
 from utils.rate_limiter import RateLimiter 
 
