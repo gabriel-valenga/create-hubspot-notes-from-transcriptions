@@ -1,7 +1,7 @@
 import google.generativeai as genai
 from utils.aws.ssm.parameter_store import parameter_store
 
-class TextSummarizer():
+class GeminiTextSummarizer():
 
     def __init__(self):
         genai_api_key = parameter_store.get_parameter("google_ai_studio_gen_api_key")
@@ -14,4 +14,3 @@ class TextSummarizer():
         response = self.chat.send_message(f"Summarize this text: {text}")
         print(response.text)
         return response.text
-

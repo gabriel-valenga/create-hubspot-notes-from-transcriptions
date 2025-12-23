@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from mangum import Mangum
 from models.requests.text_summarizer import TextSummarizerRequest
 from routes.auth import router as auth_router
-from utils.ai.text import TextSummarizer
+from business.ai.text_summarizer_service import TextSummarizer
 from utils.auth import verify_token
 
 
