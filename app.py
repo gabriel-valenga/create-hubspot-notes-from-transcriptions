@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request, Security
 from fastapi.responses import JSONResponse
 from mangum import Mangum
+from infra.ai.gemini_text_summarizer import GeminiTextSummarizer
 from models.requests.text_summarizer import TextSummarizerRequest
 from routes.auth import router as auth_router
-from business.ai.text_summarizer_service import TextSummarizer
+from business.ai.text_summarizer_service import TextSummarizerService
 from utils.auth import verify_token
 
 
@@ -37,7 +38,7 @@ def test_endpoint(request: Request, _=Security(verify_token)):
 @app.post("/test-summarizer")
 async def test_summarizer(request:Request, body: TextSummarizerRequest, _=Security(verify_token)):
     text = body.text
-    summary = TextSummarizer().summarize_text(text)
+    summary = TextSummarizerService(GeminiTextSummarizer()).summarize_text(text)
     return {"summary": summary}
 
 
