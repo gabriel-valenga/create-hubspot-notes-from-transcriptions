@@ -1,4 +1,4 @@
-from tests.mocks.mock_ai_text import MockTextSummarizer
+from tests.mocks.mock_ai_text_summarizer import MockTextSummarizer
 from business.ai.text_summarizer_service import TextSummarizerService
 
 

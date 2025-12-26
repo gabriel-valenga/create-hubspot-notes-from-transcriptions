@@ -1,11 +1,6 @@
-from fastapi import HTTPException, status
-
-async def override_verify_token_valid(token: str):
-    return 'test-token'
+def override_verify_token_valid(self, token: str):
+    return {"sub": "test-token"}
     
 
-async def override_verify_token_invalid(token: str):
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail='Invalid token'
-    )
+def override_verify_token_invalid(self, token: str):
+    raise ValueError("Invalid token")
