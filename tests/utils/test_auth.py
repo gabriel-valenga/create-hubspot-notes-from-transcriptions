@@ -1,12 +1,12 @@
 import pytest
 from fastapi import HTTPException
-from tests.mocks.mock_auth import override_verify_token_valid, override_verify_token_invalid
 from tests.mocks.mock_parameter_store import MockParameterStore
 from utils.auth import hash_password, verify_password, verify_token
 from utils.jwt_manager import JWTManager
 
 
 mock_parameter_store = MockParameterStore()
+jwt_manager = JWTManager()
 
 
 def test_password_returns_correct_hashed_value():
@@ -29,17 +29,26 @@ def test_verify_password_returns_false_for_incorrect_password():
 
 
 @pytest.mark.asyncio
-async def test_verify_token_success(monkeypatch):
-    monkeypatch.setattr(JWTManager, 'decode_access_token', override_verify_token_valid)
-    result = await verify_token('test-token')
+async def test_verify_token_success():
+    token = jwt_manager.create_access_token(subject='test-token')
+    result = await verify_token(token)
     assert result == 'test-token'
+
+
+def fake_decode_access_token_invalid(self, token: str):
+    raise ValueError('Invalid token')
 
 
 @pytest.mark.asyncio
 async def test_verify_token_error(monkeypatch):
-    monkeypatch.setattr(JWTManager, 'decode_access_token', override_verify_token_invalid)
-    with pytest.raises(HTTPException) as exc:
-        await verify_token("bad-token")
-    assert exc.value.status_code == 401
-    assert exc.value.detail == "Invalid token"
+    monkeypatch.setattr(
+        JWTManager,
+        'decode_access_token',
+        fake_decode_access_token_invalid
+    )
 
+    with pytest.raises(HTTPException) as exc:
+        await verify_token('bad-token')
+
+    assert exc.value.status_code == 401
+    assert exc.value.detail == 'Invalid token'
