@@ -1,6 +1,7 @@
 [run]
 source = 
     app.py
+    business
     routes
     utils 
 
@@ -9,6 +10,10 @@ omit =
     .venv/*
     **/__init__.py
     config.py
+    */routes/*
+    */storage/*
+    */rate_limiter.py
+    */storage_protocol.py
 
 [report]
 exclude_lines =

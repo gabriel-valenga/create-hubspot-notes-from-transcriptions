@@ -1,47 +1,54 @@
 import pytest
-from unittest.mock import MagicMock
 from fastapi import HTTPException
-from tests.mocks.mock_auth import mock_verify_token
 from tests.mocks.mock_parameter_store import MockParameterStore
+from utils.auth import hash_password, verify_password, verify_token
+from utils.jwt_manager import JWTManager
 
 
 mock_parameter_store = MockParameterStore()
-
-# ✅ Case 1: valid token (using our mock)
-def test_mock_verify_token_valid():
-    request = MagicMock()
-    request.headers = {"Authorization": "Bearer valid_token"}
-
-    result = mock_verify_token(request)
-    assert result is None  # Should not raise exception
+jwt_manager = JWTManager()
 
 
-# ❌ Case 2: missing Authorization header
-def test_mock_verify_token_missing_header():
-    request = MagicMock()
-    request.headers = {}
-
-    with pytest.raises(HTTPException) as exc_info:
-        mock_verify_token(request)
-    assert "Missing or invalid" in exc_info.value.detail
+def test_password_returns_correct_hashed_value():
+    password = 'test-password'
+    hashed_password = hash_password(password)
+    assert hashed_password != password 
+    assert isinstance(hashed_password, str)
 
 
-# ❌ Case 3: missing AUTH_TOKEN_PARAM_NAME env var
-def test_mock_verify_token_missing_env():
-    request = MagicMock()
-    request.headers = {"Authorization": "Bearer something"}
-
-    with pytest.raises(HTTPException) as exc_info:
-        mock_verify_token(request, simulate_missing_env=True)
-    assert exc_info.value.status_code == 500
-    assert "Server misconfiguration" in exc_info.value.detail
+def test_verify_password_returns_true_for_correct_password():
+    password = 'test-password'
+    hashed_password = hash_password(password)
+    assert verify_password(password, hashed_password) is True
 
 
-# ❌ Case 4: invalid token
-def test_mock_verify_token_invalid_token():
-    request = MagicMock()
-    request.headers = {"Authorization": "Bearer wrong_token"}
+def test_verify_password_returns_false_for_incorrect_password():
+    password = 'test-password'
+    hashed_password = hash_password(password)
+    assert verify_password('wrong-password', hashed_password) is False
 
-    with pytest.raises(HTTPException) as exc_info:
-        mock_verify_token(request, simulate_invalid_token=True)
-    assert "Invalid token" in exc_info.value.detail
+
+@pytest.mark.asyncio
+async def test_verify_token_success():
+    token = jwt_manager.create_access_token(subject='test-token')
+    result = await verify_token(token)
+    assert result == 'test-token'
+
+
+def fake_decode_access_token_invalid(self, token: str):
+    raise ValueError('Invalid token')
+
+
+@pytest.mark.asyncio
+async def test_verify_token_error(monkeypatch):
+    monkeypatch.setattr(
+        JWTManager,
+        'decode_access_token',
+        fake_decode_access_token_invalid
+    )
+
+    with pytest.raises(HTTPException) as exc:
+        await verify_token('bad-token')
+
+    assert exc.value.status_code == 401
+    assert exc.value.detail == 'Invalid token'
