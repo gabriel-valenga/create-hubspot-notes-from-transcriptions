@@ -7,7 +7,7 @@ class HubspotContacts:
 
     def get_a_contact_id_by_email(self, email:str):
         url = f'{self.HUBSPOT_API_CONTACTS_URL}{email}?idProperty=email'
-        response = requests.get(url)
+        response = requests.get(url, headers=HUBSPOT_CRM_API_HEADERS)
         response.raise_for_status()
         contact_id = response.json()['id']
         return contact_id
@@ -19,6 +19,8 @@ class HubspotContacts:
                 'email': email
             }
         }
-        response = requests.post(self.HUBSPOT_API_CONTACTS_URL, json=payload, headers=HUBSPOT_CRM_API_HEADERS)
+        response = requests.post(
+            self.HUBSPOT_API_CONTACTS_URL, json=payload, headers=HUBSPOT_CRM_API_HEADERS
+        )
         response.raise_for_status()
         return response.json()['id']
