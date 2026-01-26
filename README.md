@@ -22,3 +22,8 @@ If you already installed the libraries (from the second execution onwards):
 
 * Active venv: source .venv/bin/active
 * Run the API locally: uvicorn main:app --reload
+
+
+##Important notices:
+
+The OPENAPI is not free, you have to buy credits in the OPEANAPI platform to use this script
