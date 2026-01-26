@@ -17,6 +17,6 @@ jobs:
         with:
           fetch-depth: 2
 
-      - uses: gabriel-valenga/ai-commit-revisor-for-study@v1.1.0
+      - uses: gabriel-valenga/ai-commit-revisor-for-study@v1.1.1
         with:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
