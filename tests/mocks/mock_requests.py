@@ -5,6 +5,7 @@ def fake_response(
     status_code: int = 200,
     json_body: dict | None = None,
     text: str | None = None,
+    headers: dict | None = None
 ):
     response = Response()
     response.status_code = status_code
@@ -15,5 +16,8 @@ def fake_response(
 
     if text is not None:
         response._content = text.encode('utf-8')
+
+    if headers is not None:
+        response.headers = headers
 
     return response
