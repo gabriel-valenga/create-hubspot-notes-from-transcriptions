@@ -1,8 +1,9 @@
-from mock_requests import fake_response
+from .mock_requests import fake_response
 
 
 class MockHubspotApi:
 
+    @staticmethod
     def return_an_object_with_success():
         return fake_response(
             status_code=200,
@@ -11,14 +12,16 @@ class MockHubspotApi:
         )
     
 
+    @staticmethod
     def return_a_created_object():
         return fake_response(
             status_code=201,
-            json_body={"id":"1", "properties":[]},
+            json_body={"id":"1", "properties":{}},
             text="created"
         )
     
 
+    @staticmethod
     def return_bad_request():
         return fake_response(
             status_code=400,
@@ -33,6 +36,7 @@ class MockHubspotApi:
         )
 
 
+    @staticmethod
     def return_not_found():
         return fake_response(
             status_code=404,
@@ -46,6 +50,7 @@ class MockHubspotApi:
         )
     
 
+    @staticmethod
     def return_conflict_on_contact_creation():
         return fake_response(
             status_code=409,
@@ -65,6 +70,7 @@ class MockHubspotApi:
         )
     
 
+    @staticmethod
     def return_too_many_requests():
         return fake_response(
             status_code=429,
@@ -85,6 +91,7 @@ class MockHubspotApi:
         )
 
 
+    @staticmethod
     def return_internal_error():
         return fake_response(
             status_code=500,
@@ -96,4 +103,3 @@ class MockHubspotApi:
             },
             text="internal error"
         )
-
