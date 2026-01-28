@@ -13,9 +13,10 @@ def fake_response(
     if json_body is not None:
         response._content = json.dumps(json_body).encode('utf-8')
         response.headers['Content-Type'] = 'application/json'
-
-    if text is not None:
+    elif text is not None:
         response._content = text.encode('utf-8')
+    else:
+        response._content = b""
 
     if headers is not None:
         response.headers = headers
