@@ -11,7 +11,7 @@ class HubspotNotes:
 
     HUBSPOT_API_NOTES_URL = f'{HUBSPOT_CRM_API_BASE_URL}notes/'
 
-    def create_hubspot_note_associated_to_contact(self, note_text:str, id_contact:str):
+    def create_hubspot_note_associated_to_contact(self, note_text:str, contact_id:str):
         now_timestamp = int(time.time()*1000)
         payload = {
             'properties': {
@@ -22,7 +22,7 @@ class HubspotNotes:
             'associations': [
                 {
                     'to': {
-                        'id': id_contact
+                        'id': contact_id
                     },
                     'types': [
                         {
