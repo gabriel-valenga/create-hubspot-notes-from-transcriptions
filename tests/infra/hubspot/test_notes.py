@@ -1,4 +1,3 @@
-from infra.hubspot.general import HUBSPOT_ASSOCIATION_TYPE_NOTE_TO_CONTACT, HUBSPOT_CRM_API_HEADERS, HUBSPOT_INTEGRATION_OWNER_ID
 from infra.hubspot.notes import HubspotNotes
 from tests.mocks.mock_hubspot_api import MockHubspotApi
 
