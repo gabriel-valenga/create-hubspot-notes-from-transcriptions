@@ -35,9 +35,9 @@ class HubspotNotes():
                         detail='An unexpected error in API Hubspot has occurred. Please contact API provider'
                     )
         except Exception as e:
-            logging.error(msg=f'Unexpected error: {e}', stack_info=True)
+            logging.error(msg=f'Unexpected error creating Hubspot note has ocurred: {e}', stack_info=True)
             raise HTTPException(
                 status_code=HTTPStatus.INTERNAL_SERVER_ERROR, 
-                detail='An unexpected internal error has ocurred. Please contact API provider'
+                detail='An unexpected internal error creating Hubspot note has ocurred. Please contact API provider'
             )
         
