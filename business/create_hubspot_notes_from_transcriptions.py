@@ -1,9 +1,9 @@
-from http import HTTPStatus
 import logging
-
+from http import HTTPStatus
 from fastapi import HTTPException
 from business.ai.text_summarizer_service import TextSummarizerService
 from business.hubspot.notes import HubspotNotes
+from infra.ai.gemini_text_summarizer import GeminiTextSummarizer
 
 
 class CreateHubspotNoteFromTranscriptionService:
@@ -11,7 +11,7 @@ class CreateHubspotNoteFromTranscriptionService:
     @staticmethod
     def create_hubspot_note_from_transcription(transcription:str, email:str):
         try:
-            transcription = TextSummarizerService().summarize_text(transcription)
+            transcription = TextSummarizerService(GeminiTextSummarizer()).summarize_text(text=transcription)
             HubspotNotes().create_hubspot_note_associated_with_a_contact_by_email(
                 note_text=transcription,
                 email=email
