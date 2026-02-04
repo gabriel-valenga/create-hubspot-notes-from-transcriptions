@@ -6,7 +6,7 @@ from models.requests.user_requests import SignupRequest, LoginRequest, TokenResp
 from utils.auth import hash_password, verify_password
 from utils.storage import get_storage
 from utils.jwt_manager import JWTManager
-from utils.rate_limiter import RateLimiter 
+from utils.rate_limiter.local_rate_limiter import LocalRateLimiter 
 
 router = APIRouter(prefix='/auth')
 jwt_manager = JWTManager()
@@ -24,11 +24,11 @@ def signup(payload: SignupRequest):
 
 
 @router.post('/login', response_model=TokenResponse)
-def login(payload: LoginRequest, request: Request):
-    ip = request.client.host if request.client else 'local'
-    if not RateLimiter.allow_request(ip):
+def login(payload: LoginRequest, _: Request):
+    email = payload.email.lower()
+    if not LocalRateLimiter().allow_request(email):
         raise HTTPException(status_code=429, detail='Too Many Requests')
-    user = storage.get_user_by_email(payload.email)
+    user = storage.get_user_by_email(payload.email)        
     if not user or not verify_password(payload.password, user['hashed_password']):
         raise HTTPException(status_code=401, detail='Invalid credentials')
     access = jwt_manager.create_access_token(subject=user['user_id'])
@@ -59,7 +59,10 @@ def logout(refresh_token: str):
 
 @router.post('/login-swagger', response_model=TokenResponse)
 def login_swagger(form: OAuth2PasswordRequestForm = Depends()):
-    user = storage.get_user_by_email(form.username)
+    email = form.username.lower()
+    if not LocalRateLimiter().allow_request(email):
+        raise HTTPException(status_code=429, detail='Too Many Requests')
+    user = storage.get_user_by_email(email)
     if not user or not verify_password(form.password, user['hashed_password']):
         raise HTTPException(status_code=401, detail='Invalid credentials')
     access = jwt_manager.create_access_token(subject=user['user_id'])

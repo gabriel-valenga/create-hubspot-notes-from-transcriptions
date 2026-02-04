@@ -1,30 +1,22 @@
 from unittest.mock import MagicMock
-import utils.aws.ssm.parameter_store as parameter_store
+import utils.aws.ssm.parameter_store.aws_parameter_store as aws_parameter_store
+import utils.aws.ssm.parameter_store.local_parameter_store as local_parameter_store
 
 
-def test_get_parameter_success_using_env(monkeypatch):
+def test_local_parameter_store_get_parameter_success(monkeypatch):
     monkeypatch.setenv('TEST_KEY', 'secret-value')
-    fake_client = MagicMock()
-    fake_client.get_parameter.return_value = {
-        'Parameter': {'Value': 'secret-value'}
-    }
-    monkeypatch.setattr(
-        'utils.aws.ssm.parameter_store.boto3.client',
-        lambda *_: fake_client
-    )
-    ps = parameter_store.ParameterStore()
+    ps = local_parameter_store.LocalParameterStore()
     value = ps.get_parameter('TEST_KEY')
     assert value == 'secret-value'
 
 
-def test_get_parameter_success_using_aws_ssm(monkeypatch):
-    monkeypatch.setattr(parameter_store, "ENV", "prod")
+def test_aws_ssm_parameter_store_get_parameter_success(monkeypatch):
     fake_client = MagicMock()
     fake_client.get_parameter.return_value = {
         "Parameter": {"Value": "aws-secret"}
     }
-    monkeypatch.setattr(parameter_store.boto3, "client", lambda *_: fake_client)
-    store = parameter_store.ParameterStore()
+    monkeypatch.setattr(aws_parameter_store.boto3, "client", lambda *_: fake_client)
+    store = aws_parameter_store.AwsParameterStore()
     # clears lru_cache
     store.get_parameter.cache_clear()
     value = store.get_parameter("MY_KEY")
