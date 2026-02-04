@@ -11,7 +11,7 @@ def test_create_hubspot_note_associated_to_contact_success(monkeypatch):
     monkeypatch.setattr("infra.hubspot.notes.requests.post", fake_post)
     note_id = hubspot_notes.create_hubspot_note_associated_to_contact(
         note_text="Test note",
-        id_contact="123"
+        contact_id="123"
     )
     assert note_id == "1"
     
