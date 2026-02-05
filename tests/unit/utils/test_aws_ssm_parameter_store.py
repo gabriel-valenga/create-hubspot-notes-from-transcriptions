@@ -1,8 +1,10 @@
 from unittest.mock import MagicMock
+import pytest
 import utils.aws.ssm.parameter_store.aws_parameter_store as aws_parameter_store
 import utils.aws.ssm.parameter_store.local_parameter_store as local_parameter_store
 
 
+@pytest.mark.unit
 def test_local_parameter_store_get_parameter_success(monkeypatch):
     monkeypatch.setenv('TEST_KEY', 'secret-value')
     ps = local_parameter_store.LocalParameterStore()
@@ -10,6 +12,7 @@ def test_local_parameter_store_get_parameter_success(monkeypatch):
     assert value == 'secret-value'
 
 
+@pytest.mark.unit
 def test_aws_ssm_parameter_store_get_parameter_success(monkeypatch):
     fake_client = MagicMock()
     fake_client.get_parameter.return_value = {

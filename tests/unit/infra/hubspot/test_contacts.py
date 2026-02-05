@@ -19,11 +19,13 @@ def mock_hubspot_api_contacts_post_created(monkeypatch):
     monkeypatch.setattr("infra.hubspot.contacts.requests.post", fake_post)
 
 
+@pytest.mark.unit
 def test_get_a_contact_by_email_success(mock_hubspot_api_contacts_get_success):    
     contact_id = hubspot_contacts.get_a_contact_id_by_email(email='test@email.com')
     assert contact_id == '1'
 
 
+@pytest.mark.unit
 def test_create_hubspot_contact(mock_hubspot_api_contacts_post_created):
     contact_id = hubspot_contacts.create_hubspot_contact(email='testnew@email.com')
     assert contact_id == '1'

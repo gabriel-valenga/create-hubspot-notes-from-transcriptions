@@ -2,12 +2,14 @@ import pytest
 from utils.jwt_manager import JWTManager
 
 
+@pytest.mark.unit
 def test_create_access_token_returns_string():
     jwtm = JWTManager()
     token = jwtm.create_access_token('test-user')
     assert isinstance(token, str)
 
 
+@pytest.mark.unit
 def test_decode_access_token_success():
     jwtm = JWTManager()
     token = jwtm.create_access_token('test-user')
@@ -15,6 +17,7 @@ def test_decode_access_token_success():
     assert payload['sub'] == 'test-user'
 
 
+@pytest.mark.unit
 def test_decode_access_token_invalid():
     jwtm = JWTManager()
     with pytest.raises(Exception) as exc:
@@ -22,6 +25,7 @@ def test_decode_access_token_invalid():
     assert 'Invalid' in str(exc.value)
 
 
+@pytest.mark.unit
 def test_decode_access_token_expired():
     jwtm = JWTManager()
     # create an already expired token
