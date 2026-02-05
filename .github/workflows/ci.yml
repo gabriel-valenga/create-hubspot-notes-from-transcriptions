@@ -7,8 +7,14 @@ on:
 
 env:
     ENV: local
+    AUTH_TOKEN_PARAM_NAME: my_auth_token
+    JWT_SECRET_KEY: super-secret-key
+    JWT_ALGORITHM: HS256
+    GENAI_API_KEY: abc123
+    DATABASE_URL: sqlite:///./local.db
     HUBSPOT_INTEGRATION_PRIVATE_APP_KEY: test
-    JWT_SECRET_KEY: test
+    HUBSPOT_INTEGRATION_OWNER_ID: test
+    google_ai_studio_gen_api_key: test
 
 jobs:
   tests:
