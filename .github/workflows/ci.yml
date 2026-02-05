@@ -7,6 +7,8 @@ on:
 
 env:
     ENV: local
+    HUBSPOT_INTEGRATION_PRIVATE_APP_KEY: test
+    JWT_SECRET_KEY: test
 
 jobs:
   tests:
