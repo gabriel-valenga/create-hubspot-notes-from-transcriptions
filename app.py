@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException, Request, Security
+from fastapi import FastAPI, HTTPException, Request, Security, status
 from fastapi.responses import JSONResponse
 from mangum import Mangum
+from business.create_hubspot_notes_from_transcriptions import CreateHubspotNoteFromTranscriptionService
 from infra.ai.gemini_text_summarizer import GeminiTextSummarizer
 from models.requests.text_summarizer import TextSummarizerRequest
 from routes.auth import router as auth_router
@@ -40,6 +41,17 @@ async def test_summarizer(request:Request, body: TextSummarizerRequest, _=Securi
     text = body.text
     summary = TextSummarizerService(GeminiTextSummarizer()).summarize_text(text)
     return {"summary": summary}
+
+
+@app.post("/create-hubspot-note-from-transcription", status_code=status.HTTP_201_CREATED)
+async def create_hubspot_note_from_transcription(body: dict):
+    transcription = body["transcription"]
+    email = body["email"]
+    CreateHubspotNoteFromTranscriptionService().create_hubspot_note_from_transcription(
+        transcription=transcription,
+        email=email
+    )
+    return {"message": "Hubspot note created"}
 
 
 handler = Mangum(app)
