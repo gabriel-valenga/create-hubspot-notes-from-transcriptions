@@ -1,3 +1,4 @@
+import pytest
 from infra.hubspot.notes import HubspotNotes
 from tests.mocks.mock_hubspot_api import MockHubspotApi
 
@@ -5,6 +6,7 @@ mock_hubspot_api = MockHubspotApi()
 hubspot_notes = HubspotNotes()
 
 
+@pytest.mark.unit
 def test_create_hubspot_note_associated_to_contact_success(monkeypatch):
     def fake_post(*args, **kwargs):
         return mock_hubspot_api.return_a_created_object()

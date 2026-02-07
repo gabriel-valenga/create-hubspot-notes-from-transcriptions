@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [ "master", "develop", "ci" ]
+  pull_request:
+
+env:
+    ENV: local
+    AUTH_TOKEN_PARAM_NAME: my_auth_token
+    JWT_SECRET_KEY: super-secret-key
+    JWT_ALGORITHM: HS256
+    GENAI_API_KEY: abc123
+    DATABASE_URL: sqlite:///./local.db
+    HUBSPOT_INTEGRATION_PRIVATE_APP_KEY: test
+    HUBSPOT_INTEGRATION_OWNER_ID: test
+    google_ai_studio_gen_api_key: test
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov ruff
+
+      - name: Lint
+        run: |
+          ruff check .
+
+      - name: Run unit tests
+        run: |
+          pytest -m unit --cov=.
+
+      - name: Run integration tests
+        run: |
+          pytest -m integration
+
+      - name: Coverage report
+        run: |
+          pytest --cov=. --cov-report=xml

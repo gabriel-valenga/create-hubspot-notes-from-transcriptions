@@ -9,6 +9,7 @@ mock_parameter_store = MockParameterStore()
 jwt_manager = JWTManager()
 
 
+@pytest.mark.unit
 def test_password_returns_correct_hashed_value():
     password = 'test-password'
     hashed_password = hash_password(password)
@@ -16,18 +17,21 @@ def test_password_returns_correct_hashed_value():
     assert isinstance(hashed_password, str)
 
 
+@pytest.mark.unit
 def test_verify_password_returns_true_for_correct_password():
     password = 'test-password'
     hashed_password = hash_password(password)
     assert verify_password(password, hashed_password) is True
 
 
+@pytest.mark.unit
 def test_verify_password_returns_false_for_incorrect_password():
     password = 'test-password'
     hashed_password = hash_password(password)
     assert verify_password('wrong-password', hashed_password) is False
 
 
+@pytest.mark.unit
 @pytest.mark.asyncio
 async def test_verify_token_success():
     token = jwt_manager.create_access_token(subject='test-token')
@@ -39,6 +43,7 @@ def fake_decode_access_token_invalid(self, token: str):
     raise ValueError('Invalid token')
 
 
+@pytest.mark.unit
 @pytest.mark.asyncio
 async def test_verify_token_error(monkeypatch):
     monkeypatch.setattr(
